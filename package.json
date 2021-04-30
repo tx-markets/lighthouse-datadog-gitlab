@@ -1,0 +1,35 @@
+{
+  "name": "lighthouse-datadog-gitlab",
+  "version": "1.0.0",
+  "description": "A script to audit a given set of project URLs and post key results into DataDog. To be run as a scheduled job.",
+  "license": "MIT",
+  "scripts": {
+    "lighthouse:audit": "ts-node --files src/index.ts",
+    "test:unit": "jest",
+    "lint": "eslint --config .eslintrc.json --ignore-path .gitignore './**/*.{js,ts}'",
+    "lint:fix": "eslint --config .eslintrc.json --ignore-path .gitignore './**/*.{js,ts}' --fix"
+  },
+  "dependencies": {
+    "axios": "0.21.1",
+    "chrome-launcher": "0.13.4",
+    "lighthouse": "7.4.0",
+    "lodash.get": "4.4.2"
+  },
+  "devDependencies": {
+    "@types/jest": "26.0.23",
+    "@types/lodash.get": "4.4.6",
+    "@types/node": "15.0.1",
+    "@typescript-eslint/eslint-plugin": "4.22.0",
+    "@typescript-eslint/parser": "4.22.0",
+    "eslint": "7.25.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-jest": "24.3.6",
+    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-sonarjs": "0.7.0",
+    "jest": "26.6.3",
+    "prettier": "2.2.1",
+    "ts-jest": "26.5.5",
+    "ts-node": "9.1.1",
+    "typescript": "4.2.4"
+  }
+}

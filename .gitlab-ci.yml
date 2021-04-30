@@ -1,0 +1,80 @@
+image: node:12-alpine
+
+stages:
+  - install
+  - test
+  - audit
+
+.run_in_master: &run_in_master
+  if: '$CI_COMMIT_REF_NAME == "master"'
+  when: on_success
+
+.run_in_mr: &run_in_mr
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  when: on_success
+
+.run_on_schedule: &run_on_schedule
+  if: '$CI_PIPELINE_SOURCE == "schedule"'
+  when: on_success
+
+.do_not_run_otherwise: &do_not_run_otherwise
+  when: never
+
+.base:
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_DEPTH: 200
+  cache:
+    key: lighthouse-datadog-${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules
+    policy: pull
+  rules:
+    - *run_in_master
+    - *run_in_mr
+    - *run_on_schedule
+    - *do_not_run_otherwise
+  before_script:
+    - yarn install --frozen-lockfile
+
+Install:
+  stage: install
+  extends: .base
+  cache:
+    policy: pull-push
+  script:
+    - echo "Dependencies installed"
+
+Unit test:
+  stage: test
+  extends: .base
+  rules:
+    - *run_in_master
+    - *run_in_mr
+    - *do_not_run_otherwise
+  script:
+    - yarn test:unit
+
+Lint:
+  stage: test
+  extends: .base
+  rules:
+    - *run_in_master
+    - *run_in_mr
+    - *do_not_run_otherwise
+  script:
+    - yarn lint
+
+Audit:
+  stage: audit
+  extends: .base
+  image: cypress/browsers:latest
+  rules:
+    - *run_on_schedule
+    - *do_not_run_otherwise
+  script:
+    - yarn lighthouse:audit
+  artifacts:
+    paths:
+      - lighthouse-reports/*
+    expire_in: 1 week

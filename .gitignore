@@ -1,0 +1,4 @@
+node_modules
+lint-report.json
+.idea
+lighthouse-reports
